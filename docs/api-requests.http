@@ -1,0 +1,142 @@
+### ===================================================================
+### Integrador Odontología - Colección de Pruebas HTTP (REST Client)
+### Compatible con IntelliJ IDEA, VS Code (REST Client) y Thunder Client
+### ===================================================================
+
+@baseUrl = http://localhost:8080
+@token = {{auth_login_admin.response.body.token}}
+
+### -------------------------------------------------------------------
+### 1. HEALTH CHECK & ESTADO OPERATIVO
+### -------------------------------------------------------------------
+
+### Comprobar estado de salud del backend
+GET {{baseUrl}}/api/health
+Accept: application/json
+
+### -------------------------------------------------------------------
+### 2. AUTENTICACIÓN Y ROLES (Change C-03 - Tomas)
+### -------------------------------------------------------------------
+
+### Login como Administrador (Seed inicial)
+# @name auth_login_admin
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+### Login como Recepcionista (Seed inicial)
+# @name auth_login_recepcion
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "recepcion",
+  "password": "recepcion123"
+}
+
+### Registro público de nuevo Paciente
+POST {{baseUrl}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "username": "paciente_carlos",
+  "email": "carlos.perez@example.com",
+  "password": "Password123!"
+}
+
+### -------------------------------------------------------------------
+### 3. ODONTÓLOGOS Y PROFESIONALES (Change C-04 - Tomas)
+### -------------------------------------------------------------------
+
+### Listar catálogo público de profesionales (Sin autenticación)
+GET {{baseUrl}}/api/v1/public/odontologos
+Accept: application/json
+
+### Alta administrativa de odontólogo (Requiere Rol ADMIN)
+POST {{baseUrl}}/api/v1/admin/odontologos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nombre": "Ana",
+  "apellido": "Gómez",
+  "matricula": "MN-45981",
+  "especialidad": "Ortodoncia",
+  "username": "dra_gomez",
+  "email": "dra.gomez@odontologia.com"
+}
+
+### -------------------------------------------------------------------
+### 4. PACIENTES Y FICHAS (Change C-05 - Diego)
+### -------------------------------------------------------------------
+
+### Alta de paciente en mesa de entrada (Crea Historia Clínica base)
+POST {{baseUrl}}/api/v1/pacientes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "dni": "35123456",
+  "nombre": "Juan Carlos",
+  "apellido": "Pérez",
+  "fechaNacimiento": "1990-05-15",
+  "telefono": "+542615551234",
+  "email": "juan.perez@gmail.com",
+  "obraSocial": "OSDE"
+}
+
+### Búsqueda de pacientes por DNI o coincidencia de apellido
+GET {{baseUrl}}/api/v1/pacientes/buscar?dni=35123456&q=Perez
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### -------------------------------------------------------------------
+### 5. TURNOS Y DISPONIBILIDAD (Change C-06 - Gaspar)
+### -------------------------------------------------------------------
+
+### Consultar slots libres de un odontólogo para una fecha específica
+GET {{baseUrl}}/api/v1/odontologos/1/disponibilidad?fecha=2026-12-01
+Accept: application/json
+
+### Reservar nuevo turno (Valida disponibilidad estricta y no solapamiento)
+POST {{baseUrl}}/api/v1/turnos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "pacienteId": 1,
+  "odontologoId": 1,
+  "fechaHoraInicio": "2026-12-01T09:00:00",
+  "fechaHoraFin": "2026-12-01T09:45:00",
+  "motivoConsulta": "Limpieza y control de ortodoncia"
+}
+
+### Cancelar turno (Libera el slot inmediatamente)
+PUT {{baseUrl}}/api/v1/turnos/1/cancelar
+Authorization: Bearer {{token}}
+
+### -------------------------------------------------------------------
+### 6. HISTORIA CLÍNICA Y EVOLUCIONES (Change C-08 - Diego)
+### -------------------------------------------------------------------
+
+### Consultar expediente médico completo con evoluciones cronológicas
+GET {{baseUrl}}/api/v1/historias-clinicas/paciente/1
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Registrar nota de evolución médica (Solo Odontólogo - Inmutable)
+POST {{baseUrl}}/api/v1/historias-clinicas/paciente/1/evoluciones
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "odontologoId": 1,
+  "turnoId": 1,
+  "diagnostico": "Gingivitis leve generalizada",
+  "tratamientoRealizado": "Profilaxis y tartrectomía supragingival",
+  "observaciones": "Se indica enjuague con clorhexidina 0.12% por 7 días y control en 6 meses."
+}
