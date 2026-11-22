@@ -1,0 +1,184 @@
+{
+  "version": 5,
+  "step": "done",
+  "owner": "active-orchestrator",
+  "discovery": {
+    "created_by": "discovery-research",
+    "sources": [],
+    "competitors": [
+      {
+        "name": "Planillas Excel / Papel",
+        "notes_file": null
+      },
+      {
+        "name": "Dentalink / Software comercial",
+        "notes_file": null
+      }
+    ],
+    "problema": "Desorganización en turnos odontológicos manuales, solapamiento de agendas de profesionales y falta de trazabilidad en las historias clínicas de pacientes, junto con ausentismo por falta de recordatorios.",
+    "usuarios": [
+      "Administrador",
+      "Recepcionista",
+      "Odontólogo",
+      "Paciente"
+    ],
+    "casos_de_uso": [
+      "Como Paciente o Recepcionista, quiero agendar un turno disponible para asegurar una cita sin colisiones.",
+      "Como Paciente, quiero recibir recordatorios por email/WhatsApp para no olvidar mi turno.",
+      "Como Odontólogo, quiero consultar mi agenda diaria y registrar evoluciones clínicas de los pacientes.",
+      "Como Recepcionista o Paciente, quiero cancelar o reprogramar un turno para liberar el horario.",
+      "Como Administrador, quiero gestionar usuarios, roles y disponibilidades de odontólogos."
+    ],
+    "funcionalidades_necesarias": [
+      "Autenticación y autorización basada en JWT con 4 roles (ADMIN, RECEPCION, ODONTOLOGO, PACIENTE)",
+      "Gestión de turnos con agenda por odontólogo, duración fija y validación de no solapamiento",
+      "Registro y ficha de pacientes",
+      "Historial clínico con evoluciones por consulta",
+      "Notificaciones de turnos por email y WhatsApp"
+    ],
+    "funcionalidades_opcionales": [
+      "Odontograma interactivo digital gráfico",
+      "Gestión de obras sociales, prepagas y facturación/liquidación",
+      "Reportes estadísticos de asistencia y cancelaciones"
+    ],
+    "reglas_de_negocio": [
+      "Sin solapamiento: un odontólogo no puede tener más de una reserva activa en el mismo intervalo",
+      "Estados de turno: PENDIENTE, CONFIRMADO, ATENDIDO, CANCELADO",
+      "Slots de duración fija (ej. 30 o 45 min)",
+      "Privacidad médica y control de acceso estricto a las evoluciones clínicas"
+    ],
+    "integraciones": [
+      "Servicio de correo SMTP (Spring Mail)",
+      "API de mensajería (WhatsApp Business API / mock adapter)",
+      "Base de datos relacional (MySQL / PostgreSQL)"
+    ],
+    "restricciones": [
+      "Backend en Java con Spring Boot y Gradle",
+      "Frontend en TypeScript vanilla con diseño responsivo",
+      "Arquitectura de API REST limpia"
+    ],
+    "riesgos": [
+      "Concurrencia en la reserva simultánea de un mismo slot",
+      "Mantenibilidad y modularidad de la arquitectura frontend con TypeScript vanilla",
+      "Costos o dependencia de proveedores de mensajería externa (se mitiga con adapters/mocks)"
+    ],
+    "preguntas_abiertas": [
+      "Selección definitiva entre MySQL y PostgreSQL",
+      "Definición de plantillas y antelación para el envío automático de notificaciones"
+    ]
+  },
+  "kb": {
+    "created_by": "kb-creator",
+    "source": "interactive",
+    "discovery": {
+      "problem": "Desorganización en turnos odontológicos manuales, solapamiento de agendas de profesionales y falta de trazabilidad en las historias clínicas de pacientes, junto con ausentismo por falta de recordatorios.",
+      "system_type": "web_app",
+      "domain": "healthcare / dental_clinic",
+      "scale": "team",
+      "stack": [
+        "Java",
+        "Spring Boot",
+        "Gradle",
+        "TypeScript (Vanilla)",
+        "HTML5/CSS3 responsivo",
+        "PostgreSQL",
+        "JWT"
+      ],
+      "needs_infra": true
+    },
+    "files": [
+      "knowledge-base/01_vision_y_objetivos.md",
+      "knowledge-base/02_descripcion_general.md",
+      "knowledge-base/03_actores_y_roles.md",
+      "knowledge-base/04_modelo_de_datos.md",
+      "knowledge-base/05_reglas_de_negocio.md",
+      "knowledge-base/06_funcionalidades.md",
+      "knowledge-base/07_flujos_principales.md",
+      "knowledge-base/08_arquitectura_propuesta.md",
+      "knowledge-base/09_decisiones_y_supuestos.md",
+      "knowledge-base/10_preguntas_abiertas.md",
+      "knowledge-base/README.md"
+    ]
+  },
+  "visual_design": {
+    "created_by": "design-system",
+    "mode": "system-only",
+    "status": "approved",
+    "revision": 1,
+    "path": "design-system/README.md"
+  },
+  "roadmap": {
+    "created_by": "roadmap-generator",
+    "source": "CHANGES.md",
+    "changes": [
+      "C-01",
+      "C-02",
+      "C-03",
+      "C-04",
+      "C-05",
+      "C-06",
+      "C-07",
+      "C-08",
+      "C-09"
+    ]
+  },
+  "skills": {
+    "created_by": "find-skill",
+    "recommended": [
+      {
+        "name": "spring-boot-patterns",
+        "source": "Amplicode/spring-skills",
+        "reputation": "High (15K+ installs)",
+        "why": "Arquitectura en capas, controladores REST, servicios transaccionales y manejo global de excepciones con @ControllerAdvice."
+      },
+      {
+        "name": "java-testing",
+        "source": "pluginagentmarketplace/skills@java-testing",
+        "reputation": "High (10K+ installs)",
+        "why": "Estándares de TDD, pruebas unitarias y de integración con JUnit 5, Mockito, AssertJ y MockMvc."
+      },
+      {
+        "name": "postgresql-design",
+        "source": "neondatabase/postgres-skills",
+        "reputation": "Very High (25K+ installs)",
+        "why": "Diseño de esquemas relacionales, índices, transacciones y constraints para evitar solapamiento concurrente de turnos."
+      },
+      {
+        "name": "typescript-vanilla",
+        "source": "vercel-labs/agent-skills@typescript",
+        "reputation": "Very High (50K+ installs)",
+        "why": "Tipado estricto de DTOs, contratos de API y modularización limpia en frontend sin frameworks adicionales."
+      },
+      {
+        "name": "rest-api-design",
+        "source": "anthropics/skills@api-design",
+        "reputation": "Very High (30K+ installs)",
+        "why": "Diseño de APIs RESTful limpias, semántica HTTP, respuestas de error estandarizadas y contratos de autenticación."
+      },
+      {
+        "name": "owasp-security-jwt",
+        "source": "owasp/agent-security-skills",
+        "reputation": "High (Community Standard)",
+        "why": "Directrices de seguridad para autenticación JWT, control de acceso por roles (RBAC) y privacidad de historias clínicas."
+      }
+    ],
+    "installed": [
+      "crud-rest-controller",
+      "dto-creator",
+      "spring-data-jpa",
+      "spring-security-configuration",
+      "run-tests",
+      "mapper-creator",
+      "java-debug",
+      "coverage"
+    ]
+  },
+  "agent_instruction": {
+    "created_by": "agents-md-generator",
+    "status": "completed",
+    "files": [
+      "AGENTS.md",
+      "CLAUDE.md"
+    ]
+  }
+}

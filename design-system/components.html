@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Muelita Cuyana — Catálogo de Componentes y Tokens</title>
+  <link rel="stylesheet" href="./tokens.css">
+  <style>
+    body {
+      margin: 0;
+      padding: var(--space-8);
+      background-color: var(--color-surface-bg);
+      color: var(--color-text-primary);
+      font-family: var(--font-family-base);
+      line-height: var(--line-height-normal);
+    }
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: var(--space-6);
+      border-bottom: 1px solid var(--color-border-subtle);
+      margin-bottom: var(--space-8);
+    }
+    .section-title {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-primary-800);
+      margin-top: var(--space-8);
+      margin-bottom: var(--space-4);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-6);
+    }
+    .card {
+      background: var(--color-surface-card);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-2) var(--space-4);
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all var(--transition-fast);
+      text-decoration: none;
+    }
+    .btn:focus-visible {
+      outline: none;
+      box-shadow: var(--shadow-focus);
+    }
+    .btn-primary {
+      background-color: var(--color-primary-600);
+      color: var(--color-text-inverse);
+    }
+    .btn-primary:hover {
+      background-color: var(--color-primary-700);
+    }
+    .btn-secondary {
+      background-color: var(--color-surface-card);
+      border-color: var(--color-border-strong);
+      color: var(--color-text-secondary);
+    }
+    .btn-secondary:hover {
+      background-color: var(--color-surface-subtle);
+      color: var(--color-text-primary);
+    }
+    .btn-danger {
+      background-color: var(--color-danger-bg);
+      border-color: var(--color-danger-border);
+      color: var(--color-danger-text);
+    }
+    .btn-danger:hover {
+      background-color: #fee2e2;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-semibold);
+      border: 1px solid transparent;
+    }
+    .badge-confirmado {
+      background: var(--color-success-bg);
+      color: var(--color-success-text);
+      border-color: var(--color-success-border);
+    }
+    .badge-pendiente {
+      background: var(--color-warning-bg);
+      color: var(--color-warning-text);
+      border-color: var(--color-warning-border);
+    }
+    .badge-cancelado {
+      background: var(--color-danger-bg);
+      color: var(--color-danger-text);
+      border-color: var(--color-danger-border);
+    }
+    .badge-atendido {
+      background: var(--color-info-bg);
+      color: var(--color-info-text);
+      border-color: var(--color-info-border);
+    }
+    .form-group {
+      margin-bottom: var(--space-4);
+    }
+    .form-label {
+      display: block;
+      font-size: var(--font-size-sm);
+      font-weight: var(--font-weight-medium);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-1);
+    }
+    .form-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--font-size-base);
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-md);
+      background-color: var(--color-surface-card);
+      color: var(--color-text-primary);
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--color-primary-600);
+      box-shadow: var(--shadow-focus);
+    }
+    .slot-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-3) var(--space-4);
+      background: var(--color-surface-subtle);
+      border: 1px solid var(--color-border-subtle);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--space-2);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <img src="./assets/logo.svg" alt="La Muelita Cuyana Logo" width="260" height="60">
+      </div>
+      <div>
+        <span class="badge badge-confirmado">La Muelita Cuyana — Design System</span>
+      </div>
+    </header>
+
+    <h2 class="section-title">1. Botones y Acciones</h2>
+    <div class="card" style="display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center;">
+      <button class="btn btn-primary">Confirmar Turno</button>
+      <button class="btn btn-secondary">Cancelar</button>
+      <button class="btn btn-danger">Dar de Baja</button>
+      <button class="btn btn-primary" disabled style="opacity: 0.5; cursor: not-allowed;">Deshabilitado</button>
+    </div>
+
+    <h2 class="section-title">2. Estados de Turnos (Badges)</h2>
+    <div class="card" style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+      <span class="badge badge-pendiente">Pendiente</span>
+      <span class="badge badge-confirmado">Confirmado</span>
+      <span class="badge badge-atendido">Atendido</span>
+      <span class="badge badge-cancelado">Cancelado</span>
+    </div>
+
+    <h2 class="section-title">3. Formulario y Entradas</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="form-group">
+          <label class="form-label" for="paciente">Nombre y Apellido</label>
+          <input type="text" id="paciente" class="form-input" value="María García" placeholder="Ej. Juan Pérez">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="dni">DNI / Documento</label>
+          <input type="text" id="dni" class="form-input" value="38.452.119">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="odontologo">Profesional Asignado</label>
+          <select id="odontologo" class="form-input">
+            <option>Dra. Laura Martínez (Ortodoncia)</option>
+            <option>Dr. Carlos Gómez (Endodoncia)</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" style="width: 100%;">Guardar Paciente</button>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top: 0; font-size: var(--font-size-lg); color: var(--color-primary-800);">Agenda de Turnos — Vista Rápida</h3>
+        <div class="slot-item">
+          <div>
+            <strong>09:00 - 09:45</strong>
+            <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">Lucas Benítez (Limpieza dental)</div>
+          </div>
+          <span class="badge badge-confirmado">Confirmado</span>
+        </div>
+        <div class="slot-item">
+          <div>
+            <strong>10:00 - 10:45</strong>
+            <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">Sofía Rossi (Control de brackets)</div>
+          </div>
+          <span class="badge badge-pendiente">Pendiente</span>
+        </div>
+        <div class="slot-item">
+          <div>
+            <strong>11:00 - 11:45</strong>
+            <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">Disponible</div>
+          </div>
+          <button class="btn btn-secondary" style="padding: var(--space-1) var(--space-2); font-size: var(--font-size-xs);">Asignar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./brand.js"></script>
+</body>
+</html>
