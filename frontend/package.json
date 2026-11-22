@@ -1,0 +1,12 @@
+{
+  "name": "integrador-odontologia-frontend",
+  "version": "1.0.0",
+  "description": "Frontend web en TypeScript vanilla para la clínica odontológica",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}
