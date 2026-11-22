@@ -104,7 +104,7 @@ Paso │ Agente A (Backend Core)       │ Agente B (Backend Aux)       │ Agen
 ---
 
 ### [C-02] `core-models`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (archivado 2026-11-22)
 - **Scope**: Entidades base, auditoría, manejo global de excepciones y seed inicial
   - Entidad JPA `Usuario`: `id` (BIGSERIAL PK), `username` (UNIQUE), `password_hash`, `email` (UNIQUE), `rol` ENUM (`ADMIN`, `RECEPCION`, `ODONTOLOGO`, `PACIENTE`), `activo` (BOOLEAN DEFAULT TRUE), `fecha_creacion`
   - MappedSuperclass `AuditableEntity` con timestamps y soporte de soft delete mediante `@Where(clause = "activo = true")` y método de baja lógica
