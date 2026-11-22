@@ -85,7 +85,7 @@ Paso │ Agente A (Backend Core)       │ Agente B (Backend Aux)       │ Agen
 ## FASE 0 — Cimientos e Infraestructura Base
 
 ### [C-01] `foundation-setup`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (archivado 2026-11-22)
 - **Scope**: Scaffolding del monorepo, configuración de compilación y entorno Docker
   - Estructura de directorios base: `backend/`, `frontend/`, `knowledge-base/`, `design-system/`
   - `backend/`: Proyecto Spring Boot 3.x con Java 17/21 y Gradle (`build.gradle`, `settings.gradle`) con dependencias: `spring-boot-starter-web`, `spring-boot-starter-data-jpa`, `spring-boot-starter-security`, `spring-boot-starter-validation`, driver PostgreSQL, H2 para tests y Lombok
