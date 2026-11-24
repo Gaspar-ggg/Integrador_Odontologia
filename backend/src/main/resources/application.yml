@@ -17,5 +17,9 @@ spring:
         format_sql: true
     show-sql: false
 
+jwt:
+  secret: ${JWT_SECRET:dev-super-secret-key-change-in-production-odontologia-2026-32bytes-min}
+  expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
 server:
   port: 8080
