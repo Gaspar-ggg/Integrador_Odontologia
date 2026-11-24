@@ -126,7 +126,7 @@ Paso │ Agente A (Backend Core)       │ Agente B (Backend Aux)       │ Agen
 ## FASE 1 — Autenticación y Catálogos de Usuarios
 
 ### [C-03] `auth-jwt`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (archivado 2026-11-24)
 - **Scope**: Autenticación JWT stateless, configuración de seguridad Spring Security y RBAC
   - Configuración de Spring Security 6 (`SecurityFilterChain`, sesión `STATELESS`, habilitación de CORS para frontend local)
   - `JwtTokenProvider`: generación y validación de tokens firmados HMAC-SHA256 con claims (`username`, `id`, `rol`) y expiración en 24 horas (RN-AU-02)
