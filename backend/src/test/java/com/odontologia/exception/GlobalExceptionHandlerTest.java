@@ -33,6 +33,11 @@ class GlobalExceptionHandlerTest {
         public void throwConflict() {
             throw new ConflictException("Conflicto de reserva de turno");
         }
+
+        @GetMapping("/test/forbidden")
+        public void throwForbidden() {
+            throw new AccountDisabledException("Cuenta deshabilitada");
+        }
     }
 
     @BeforeEach
@@ -75,5 +80,17 @@ class GlobalExceptionHandlerTest {
                 .andExpect(jsonPath("$.error").value("Conflict"))
                 .andExpect(jsonPath("$.message").value("Conflicto de reserva de turno"))
                 .andExpect(jsonPath("$.path").value("/test/conflict"));
+    }
+
+    @Test
+    @DisplayName("Debe manejar AccountDisabledException retornando 403 con estructura ErrorResponseDTO")
+    void handleAccountDisabled_DebeRetornar403() throws Exception {
+        mockMvc.perform(get("/test/forbidden").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.status").value(403))
+                .andExpect(jsonPath("$.error").value("Forbidden"))
+                .andExpect(jsonPath("$.message").value("Cuenta deshabilitada"))
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.path").value("/test/forbidden"));
     }
 }

@@ -13,3 +13,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
     show-sql: false
+
+jwt:
+  secret: test-super-secret-key-for-jwt-authentication-odontologia-2026-32bytes-min
+  expiration-ms: 86400000

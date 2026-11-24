@@ -98,4 +98,26 @@ class UsuarioRepositoryTest {
         Optional<Usuario> encontrado = usuarioRepository.findById(id);
         assertThat(encontrado).isEmpty();
     }
+
+    @Test
+    @DisplayName("Consulta nativa debe encontrar usuario inactivo mientras el finder derivado lo excluye por @SQLRestriction")
+    void findByUsernameIncludingInactive_DebeRetornarInactivo() {
+        Usuario usuario = Usuario.builder()
+                .username("inactivo1")
+                .email("inactivo1@test.com")
+                .passwordHash("hashedPassword123")
+                .rol(Rol.PACIENTE)
+                .build();
+        Usuario guardado = usuarioRepository.saveAndFlush(usuario);
+
+        usuarioRepository.delete(guardado);
+        usuarioRepository.flush();
+
+        Optional<Usuario> porFinderDerivado = usuarioRepository.findByUsername("inactivo1");
+        Optional<Usuario> porNativa = usuarioRepository.findByUsernameIncludingInactive("inactivo1");
+
+        assertThat(porFinderDerivado).isEmpty();
+        assertThat(porNativa).isPresent();
+        assertThat(porNativa.get().getActivo()).isFalse();
+    }
 }

@@ -131,7 +131,7 @@ El proyecto se desarrolla de forma modular y verificable siguiendo los 9 changes
 
 - [x] **C-01 `foundation-setup`** — Scaffolding del monorepo, Docker, Gradle y TypeScript base. *(Completado)*
 - [x] **C-02 `core-models`** — Modelo de Usuario, auditoría con soft delete y manejo global de excepciones. *(Completado)*
-- [ ] **C-03 `auth-jwt`** — Autenticación stateless JWT, Spring Security 6 y RBAC. *(Asignado a: Tomas)*
+- [x] **C-03 `auth-jwt`** — Autenticación stateless JWT, Spring Security 6 y RBAC. *(Completado)*
 - [ ] **C-04 `profesionales-service`** — Catálogo y CRUD administrativo de odontólogos. *(Asignado a: Tomas)*
 - [ ] **C-05 `pacientes-service`** — Gestión de pacientes y creación automática de historia clínica. *(Asignado a: Diego)*
 - [ ] **C-06 `turnos-agenda-backend`** — Lógica de turnos, cálculo de disponibilidad y anti-solapamiento. *(Asignado a: Gaspar)*
