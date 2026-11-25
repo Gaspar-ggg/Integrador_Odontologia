@@ -9,18 +9,18 @@
 
 ## 2. Modelo y persistencia
 
-- [ ] 2.1 Escribir el test fallido de `OdontologoRepositoryTest` sobre H2: persistir un odontólogo con su `Usuario`, recuperarlo por matrícula, por especialidad y por estado activo, y comprobar que tras `delete()` queda `activo = false` en la fila (consulta nativa) y desaparece de las consultas derivadas; verificar rojo antes de crear la entidad.
-- [ ] 2.2 Implementar `Odontologo extends AuditableEntity` con `@SQLDelete`/`@SQLRestriction`, `@ManyToOne` a `Usuario` con `unique = true`, `@Column(unique = true)` en `matricula`, y `OdontologoRepository` con `findByMatricula`, `existsByMatricula`, `findByEspecialidad`, `findByActivoTrue` y query nativa `findByMatriculaIncludingInactive`; verificar que el test 2.1 pasa.
-- [ ] 2.3 Agregar el test de constraints H2 que rechaza matrícula y `usuario_id` duplicados, y verifica que la query nativa `IncludingInactive` sí ve registros dados de baja; verificar que both assertion pasan.
+- [x] 2.1 Escribir el test fallido de `OdontologoRepositoryTest` sobre H2: persistir un odontólogo con su `Usuario`, recuperarlo por matrícula, por especialidad y por estado activo, y comprobar que tras `delete()` queda `activo = false` en la fila (consulta nativa) y desaparece de las consultas derivadas; verificar rojo antes de crear la entidad.
+- [x] 2.2 Implementar `Odontologo extends AuditableEntity` con `@SQLDelete`/`@SQLRestriction`, `@ManyToOne` a `Usuario` con `unique = true`, `@Column(unique = true)` en `matricula`, y `OdontologoRepository` con `findByMatricula`, `existsByMatricula`, `findByEspecialidad`, `findByActivoTrue` y query nativa `findByMatriculaIncludingInactive`; verificar que el test 2.1 pasa.
+- [x] 2.3 Agregar el test de constraints H2 que rechaza matrícula y `usuario_id` duplicados, y verifica que la query nativa `IncludingInactive` sí ve registros dados de baja; verificar que both assertion pasan.
 
 ## 3. DTOs y servicio
 
-- [ ] 3.1 Escribir los tests fallidos de validación de `OdontologoRequestDTO`: `password` ausente/vacío/corto y campos obligatorios faltantes producen 400 con `details` en `ErrorResponseDTO`; verificar rojo.
-- [ ] 3.2 Crear `OdontologoRequestDTO`, `OdontologoResponseDTO` y `OdontologoPublicDTO` con validaciones Jakarta, sin exponer entidades JPA ni `password` en las respuestas; verificar que los tests 3.1 pasan.
-- [ ] 3.3 Escribir el test fallido de `OdontologoServiceTest`: el alta crea `Usuario` con `Rol.ODONTOLOGO` y `passwordHash` BCrypt(10) vinculado al odontólogo, en una sola transacción (rollback si falla el segundo insert); verificar rojo.
-- [ ] 3.4 Implementar el alta en `OdontologoService` con `@Transactional`, reutilizando el bean `PasswordEncoder`; verificar que el test 3.3 pasa y que la respuesta no contiene la contraseña.
-- [ ] 3.5 Escribir los tests fallidos de duplicados: matrícula repetida y `username`/`email` de cuenta inactiva (usando `findByUsernameIncludingInactive`/`findByEmailIncludingInactive`) lanzan `ConflictException` sin dejar registros parciales; verificar rojo.
-- [ ] 3.6 Implementar las validaciones de duplicado en el servicio y verificar que los tests 3.5 pasan con 409 mapeado por `GlobalExceptionHandler`.
+- [x] 3.1 Escribir los tests fallidos de validación de `OdontologoRequestDTO`: `password` ausente/vacío/corto y campos obligatorios faltantes producen 400 con `details` en `ErrorResponseDTO`; verificar rojo.
+- [x] 3.2 Crear `OdontologoRequestDTO`, `OdontologoResponseDTO` y `OdontologoPublicDTO` con validaciones Jakarta, sin exponer entidades JPA ni `password` en las respuestas; verificar que los tests 3.1 pasan.
+- [x] 3.3 Escribir el test fallido de `OdontologoServiceTest`: el alta crea `Usuario` con `Rol.ODONTOLOGO` y `passwordHash` BCrypt(10) vinculado al odontólogo, en una sola transacción (rollback si falla el segundo insert); verificar rojo.
+- [x] 3.4 Implementar el alta en `OdontologoService` con `@Transactional`, reutilizando el bean `PasswordEncoder`; verificar que el test 3.3 pasa y que la respuesta no contiene la contraseña.
+- [x] 3.5 Escribir los tests fallidos de duplicados: matrícula repetida y `username`/`email` de cuenta inactiva (usando `findByUsernameIncludingInactive`/`findByEmailIncludingInactive`) lanzan `ConflictException` sin dejar registros parciales; verificar rojo.
+- [x] 3.6 Implementar las validaciones de duplicado en el servicio y verificar que los tests 3.5 pasan con 409 mapeado por `GlobalExceptionHandler`.
 
 ## 4. Endpoints administrativos
 
