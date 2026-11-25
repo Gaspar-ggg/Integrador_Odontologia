@@ -243,7 +243,7 @@ Paso │ Agente A (Backend Core)       │ Agente B (Backend Aux)       │ Agen
 ## FASE 3 — Atención Clínica e Historia Médica
 
 ### [C-08] `historia-clinica-evoluciones`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (archivado 2026-11-25)
 - **Scope**: Registro de notas de evolución odontológica, inmutabilidad clínica y transición de turnos a atendido
   - Entidad JPA `EvolucionClinica`: `id` (BIGSERIAL PK), `historia_clinica_id` (FK), `odontologo_id` (FK), `turno_id` (FK opcional), `fecha_hora` (TIMESTAMP DEFAULT CURRENT_TIMESTAMP), `diagnostico` (TEXT), `tratamiento_realizado` (TEXT), `observaciones` (TEXT)
   - Regla de inmutabilidad clínica (RN-PA-03): únicamente operaciones de inserción y lectura cronológica; bloqueo explícito de modificaciones o eliminación física
