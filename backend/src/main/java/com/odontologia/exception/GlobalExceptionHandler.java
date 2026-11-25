@@ -1,5 +1,6 @@
 package com.odontologia.exception;
 
+import org.springframework.security.access.AccessDeniedException;
 import com.odontologia.dto.ErrorResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -120,4 +121,15 @@ public class GlobalExceptionHandler {
                 .build();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
+    @ExceptionHandler(AccessDeniedException.class)
+public ResponseEntity<ErrorResponseDTO> handleAccessDenied(AccessDeniedException ex, HttpServletRequest request) {
+    ErrorResponseDTO error = ErrorResponseDTO.builder()
+            .timestamp(Instant.now())
+            .status(HttpStatus.FORBIDDEN.value())
+            .error(HttpStatus.FORBIDDEN.getReasonPhrase())
+            .message("No tiene permisos para acceder a este recurso")
+            .path(request.getRequestURI())
+            .build();
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+}
 }
