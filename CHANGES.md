@@ -147,7 +147,7 @@ Paso │ Agente A (Backend Core)       │ Agente B (Backend Aux)       │ Agen
 ---
 
 ### [C-04] `profesionales-service`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (archivado 2026-11-24)
 - **Scope**: Gestión de odontólogos, especialidades, matrículas y catálogo público
   - Entidad JPA `Odontologo`: `id` (BIGSERIAL PK), `usuario_id` (FK UNIQUE a `Usuario`), `nombre`, `apellido`, `matricula` (UNIQUE), `especialidad`, `activo` (BOOLEAN)
   - `OdontologoRepository` con filtros por especialidad, matrícula y estado activo
