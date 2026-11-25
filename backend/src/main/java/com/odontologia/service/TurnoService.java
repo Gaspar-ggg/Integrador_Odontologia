@@ -4,6 +4,7 @@ import com.odontologia.dto.DisponibilidadResponseDTO;
 import com.odontologia.dto.SlotHorarioDTO;
 import com.odontologia.dto.TurnoRequestDTO;
 import com.odontologia.dto.TurnoResponseDTO;
+import com.odontologia.event.TurnoConfirmadoEvent;
 import com.odontologia.exception.BadRequestException;
 import com.odontologia.exception.ConflictException;
 import com.odontologia.exception.ResourceNotFoundException;
@@ -14,8 +15,9 @@ import com.odontologia.model.Turno;
 import com.odontologia.repository.OdontologoRepository;
 import com.odontologia.repository.PacienteRepository;
 import com.odontologia.repository.TurnoRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +32,6 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-@RequiredArgsConstructor
 public class TurnoService {
 
     private static final Set<Long> DURACIONES_ESTANDAR_MINUTOS = Set.of(30L, 45L);
@@ -40,6 +41,7 @@ public class TurnoService {
     private final OdontologoRepository odontologoRepository;
     private final PacienteRepository pacienteRepository;
     private final Clock clock;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Value("${agenda.duracion-slot-minutos:30}")
     private int duracionSlotMinutos = 30;
@@ -49,6 +51,26 @@ public class TurnoService {
 
     @Value("${agenda.hora-fin:18:00}")
     private String horaFinJornada = "18:00";
+
+    public TurnoService(TurnoRepository turnoRepository,
+                        OdontologoRepository odontologoRepository,
+                        PacienteRepository pacienteRepository,
+                        Clock clock) {
+        this(turnoRepository, odontologoRepository, pacienteRepository, clock, event -> {});
+    }
+
+    @Autowired
+    public TurnoService(TurnoRepository turnoRepository,
+                        OdontologoRepository odontologoRepository,
+                        PacienteRepository pacienteRepository,
+                        Clock clock,
+                        ApplicationEventPublisher eventPublisher) {
+        this.turnoRepository = turnoRepository;
+        this.odontologoRepository = odontologoRepository;
+        this.pacienteRepository = pacienteRepository;
+        this.clock = clock;
+        this.eventPublisher = eventPublisher;
+    }
 
     @Transactional(readOnly = true)
     public DisponibilidadResponseDTO obtenerDisponibilidad(Long odontologoId, LocalDate fecha) {
@@ -140,6 +162,9 @@ public class TurnoService {
                 .build();
 
         Turno guardado = turnoRepository.save(turno);
+        if (guardado.getEstado() == EstadoTurno.CONFIRMADO) {
+            publicarConfirmacion(guardado);
+        }
         return toResponseDTO(guardado);
     }
 
@@ -170,6 +195,7 @@ public class TurnoService {
 
         turno.setEstado(EstadoTurno.CONFIRMADO);
         Turno actualizado = turnoRepository.save(turno);
+        publicarConfirmacion(actualizado);
         return toResponseDTO(actualizado);
     }
 
@@ -226,6 +252,22 @@ public class TurnoService {
 
     private boolean seSolapan(LocalDateTime inicioA, LocalDateTime finA, LocalDateTime inicioB, LocalDateTime finB) {
         return inicioA.isBefore(finB) && finA.isAfter(inicioB);
+    }
+
+    private void publicarConfirmacion(Turno turno) {
+        Paciente p = turno.getPaciente();
+        Odontologo o = turno.getOdontologo();
+        eventPublisher.publishEvent(new TurnoConfirmadoEvent(
+                turno.getId(),
+                p.getNombre() + " " + p.getApellido(),
+                p.getEmail(),
+                p.getTelefono(),
+                o.getNombre() + " " + o.getApellido(),
+                o.getEspecialidad(),
+                turno.getFechaHoraInicio(),
+                turno.getFechaHoraFin(),
+                turno.getMotivoConsulta()
+        ));
     }
 
     private TurnoResponseDTO toResponseDTO(Turno turno) {
