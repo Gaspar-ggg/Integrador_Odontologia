@@ -2,10 +2,10 @@
 
 ## 1. Seguridad y errores (TDD rojo → verde)
 
-- [ ] 1.1 Escribir el test fallido `OdontologoControllerTest` (slice `@WebMvcTest` con `@Import({SecurityConfig.class, GlobalExceptionHandler.class})` y `@MockitoBean JwtAuthenticationFilter`) que verifique `GET /api/v1/public/odontologos` sin token responde 401 con la configuración actual; verificar que el test falla antes de tocar `SecurityConfig`.
-- [ ] 1.2 Escribir el test fallido de RBAC: un usuario con `@WithMockUser(roles = "PACIENTE")` recibe 403 con `ErrorResponseDTO` en `POST`, `PUT` y `DELETE /api/v1/admin/odontologos/**`; verificar que falla porque `@PreAuthorize` está inerte.
-- [ ] 1.3 Agregar `@EnableMethodSecurity` en `SecurityConfig` y `.requestMatchers(HttpMethod.GET, "/api/v1/public/odontologos").permitAll()`; verificar que el test de catálogo sin token pasa y que el de RBAC ya no ejecuta la operación (puede llegar 500 hasta 1.4).
-- [ ] 1.4 Agregar `@ExceptionHandler(AccessDeniedException.class)` en `GlobalExceptionHandler` devolviendo 403 con `ErrorResponseDTO` (timestamp, status, error, message, path); verificar `$.status == 403` en los tres verbos admin y que la suite existente de `AuthControllerTest`/`AuthIntegrationTest` sigue verde.
+- [x] 1.1 Escribir el test fallido `OdontologoControllerTest` (slice `@WebMvcTest` con `@Import({SecurityConfig.class, GlobalExceptionHandler.class})` y `@MockitoBean JwtAuthenticationFilter`) que verifique `GET /api/v1/public/odontologos` sin token responde 401 con la configuración actual; verificar que el test falla antes de tocar `SecurityConfig`.
+- [x] 1.2 Escribir el test fallido de RBAC: un usuario con `@WithMockUser(roles = "PACIENTE")` recibe 403 con `ErrorResponseDTO` en `POST`, `PUT` y `DELETE /api/v1/admin/odontologos/**`; verificar que falla porque `@PreAuthorize` está inerte.
+- [x] 1.3 Agregar `@EnableMethodSecurity` en `SecurityConfig` y `.requestMatchers(HttpMethod.GET, "/api/v1/public/odontologos").permitAll()`; verificar que el test de catálogo sin token pasa y que el de RBAC ya no ejecuta la operación (puede llegar 500 hasta 1.4).
+- [x] 1.4 Agregar `@ExceptionHandler(AccessDeniedException.class)` en `GlobalExceptionHandler` devolviendo 403 con `ErrorResponseDTO` (timestamp, status, error, message, path); verificar `$.status == 403` en los tres verbos admin y que la suite existente de `AuthControllerTest`/`AuthIntegrationTest` sigue verde.
 
 ## 2. Modelo y persistencia
 

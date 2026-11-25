@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +38,11 @@ class GlobalExceptionHandlerTest {
         @GetMapping("/test/forbidden")
         public void throwForbidden() {
             throw new AccountDisabledException("Cuenta deshabilitada");
+        }
+
+        @GetMapping("/test/access-denied")
+        public void throwAccessDenied() {
+            throw new AccessDeniedException("Acceso denegado");
         }
     }
 
@@ -92,5 +98,17 @@ class GlobalExceptionHandlerTest {
                 .andExpect(jsonPath("$.message").value("Cuenta deshabilitada"))
                 .andExpect(jsonPath("$.timestamp").exists())
                 .andExpect(jsonPath("$.path").value("/test/forbidden"));
+    }
+
+    @Test
+    @DisplayName("Debe manejar AccessDeniedException retornando 403 con estructura ErrorResponseDTO")
+    void handleAccessDenied_DebeRetornar403() throws Exception {
+        mockMvc.perform(get("/test/access-denied").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.status").value(403))
+                .andExpect(jsonPath("$.error").value("Forbidden"))
+                .andExpect(jsonPath("$.message").value("Acceso denegado"))
+                .andExpect(jsonPath("$.timestamp").exists())
+                .andExpect(jsonPath("$.path").value("/test/access-denied"));
     }
 }
