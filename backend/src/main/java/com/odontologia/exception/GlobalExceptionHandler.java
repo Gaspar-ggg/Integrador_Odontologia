@@ -68,6 +68,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponseDTO> handleAccessDenied(AccessDeniedException ex, HttpServletRequest request) {
+        ErrorResponseDTO error = ErrorResponseDTO.builder()
+                .timestamp(Instant.now())
+                .status(HttpStatus.FORBIDDEN.value())
+                .error(HttpStatus.FORBIDDEN.getReasonPhrase())
+                .message("Acceso denegado")
+                .path(request.getRequestURI())
+                .build();
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
     @ExceptionHandler({BadCredentialsException.class, AuthenticationException.class})
     public ResponseEntity<ErrorResponseDTO> handleAuthenticationException(Exception ex, HttpServletRequest request) {
         ErrorResponseDTO error = ErrorResponseDTO.builder()
@@ -121,15 +133,4 @@ public class GlobalExceptionHandler {
                 .build();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
-    @ExceptionHandler(AccessDeniedException.class)
-public ResponseEntity<ErrorResponseDTO> handleAccessDenied(AccessDeniedException ex, HttpServletRequest request) {
-    ErrorResponseDTO error = ErrorResponseDTO.builder()
-            .timestamp(Instant.now())
-            .status(HttpStatus.FORBIDDEN.value())
-            .error(HttpStatus.FORBIDDEN.getReasonPhrase())
-            .message("No tiene permisos para acceder a este recurso")
-            .path(request.getRequestURI())
-            .build();
-    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
-}
 }
