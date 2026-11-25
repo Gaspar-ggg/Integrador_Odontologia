@@ -170,7 +170,7 @@ Paso │ Agente A (Backend Core)       │ Agente B (Backend Aux)       │ Agen
 ---
 
 ### [C-05] `pacientes-service`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (archivado 2026-11-25)
 - **Scope**: Gestión y búsqueda de pacientes en mesa de entrada con creación de historia clínica base
   - Entidad JPA `Paciente`: `id` (BIGSERIAL PK), `usuario_id` (FK opcional a `Usuario`), `dni` (UNIQUE), `nombre`, `apellido`, `fecha_nacimiento`, `telefono`, `email`, `obra_social`, `activo` (BOOLEAN)
   - Entidad JPA `HistoriaClinica`: `id` (BIGSERIAL PK), `paciente_id` (FK UNIQUE a `Paciente`), `fecha_creacion`, `observaciones_generales`
