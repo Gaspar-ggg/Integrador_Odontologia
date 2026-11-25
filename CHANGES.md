@@ -40,25 +40,25 @@ C-01 foundation-setup
 
 ```
 GATE 0: ninguna
-  → C-01 foundation-setup (solo)
+  → C-01 foundation-setup (solo)                  [Sebastian]
 
 GATE 1: C-01 ✓
-  → C-02 core-models (solo)
+  → C-02 core-models (solo)                       [Sebastian]
 
 GATE 2: C-02 ✓
-  → C-03 auth-jwt (solo)
+  → C-03 auth-jwt (solo)                          [Tomas]
 
 GATE 3: C-03 ✓                                ← PRIMER FORK (2 paralelos)
-  → C-04 profesionales-service                [Agente A]
-  → C-05 pacientes-service                    [Agente B]
+  → C-04 profesionales-service                [Tomas]
+  → C-05 pacientes-service                    [Diego]
 
 GATE 4: C-04 + C-05 ✓
-  → C-06 turnos-agenda-backend (solo)         [Agente A]
+  → C-06 turnos-agenda-backend (solo)         [Gaspar]
 
 GATE 5: C-06 ✓                                ← SEGUNDO FORK (3 paralelos)
-  → C-07 agenda-web-frontend                  [Agente C]
-  → C-08 historia-clinica-evoluciones         [Agente A]
-  → C-09 notificaciones-turnos                [Agente B]
+  → C-07 agenda-web-frontend                  [Facundo]
+  → C-08 historia-clinica-evoluciones         [Diego]
+  → C-09 notificaciones-turnos                [Gaspar]
 ```
 
 ### Camino crítico (6 changes — mínimo irreducible)
