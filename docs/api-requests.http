@@ -161,3 +161,28 @@ Content-Type: application/json
   "tratamientoRealizado": "Profilaxis y tartrectomía supragingival",
   "observaciones": "Se indica enjuague con clorhexidina 0.12% por 7 días y control en 6 meses."
 }
+
+### [C-06] Consultar disponibilidad de odontologo
+GET http://localhost:8080/api/v1/odontologos/1/disponibilidad?fecha=2026-12-15
+Authorization: Bearer {{token}}
+
+### [C-06] Reservar turno
+POST http://localhost:8080/api/v1/turnos
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "pacienteId": 1,
+  "odontologoId": 1,
+  "fechaHoraInicio": "2026-12-15T10:00:00",
+  "fechaHoraFin": "2026-12-15T10:30:00",
+  "motivoConsulta": "Control odontologico general"
+}
+
+### [C-06] Listar turnos con filtros
+GET http://localhost:8080/api/v1/turnos?odontologoId=1&fecha=2026-12-15&estado=CONFIRMADO
+Authorization: Bearer {{token}}
+
+### [C-06] Cancelar turno
+PUT http://localhost:8080/api/v1/turnos/1/cancelar
+Authorization: Bearer {{token}}
