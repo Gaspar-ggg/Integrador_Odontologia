@@ -16,6 +16,8 @@ public interface OdontologoRepository extends JpaRepository<Odontologo, Long> {
 
     Optional<Odontologo> findByMatricula(String matricula);
 
+    Optional<Odontologo> findByUsuarioUsername(String username);
+
     boolean existsByMatricula(String matricula);
 
     List<Odontologo> findByEspecialidad(String especialidad);
