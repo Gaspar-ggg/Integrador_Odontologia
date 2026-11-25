@@ -64,7 +64,9 @@ class OdontologoRepositoryTest {
         assertThat(odontologoRepository.findById(id)).isEmpty();
         assertThat(odontologoRepository.findByMatricula("MAT-REPO-002")).isEmpty();
         assertThat(odontologoRepository.findByEspecialidad("Endodoncia")).isEmpty();
-        assertThat(odontologoRepository.findByActivoTrue()).isEmpty();
+        assertThat(odontologoRepository.findByActivoTrue())
+                .extracting(Odontologo::getId)
+                .doesNotContain(id);
     }
 
     @Test

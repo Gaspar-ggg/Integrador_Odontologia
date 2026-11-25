@@ -67,8 +67,29 @@ Content-Type: application/json
   "matricula": "MN-45981",
   "especialidad": "Ortodoncia",
   "username": "dra_gomez",
-  "email": "dra.gomez@odontologia.com"
+  "email": "dra.gomez@odontologia.com",
+  "password": "Password123!"
 }
+
+### Modificación administrativa de odontólogo (Requiere Rol ADMIN)
+# El DTO compartido exige `password` aunque la modificación no cambia la credencial
+PUT {{baseUrl}}/api/v1/admin/odontologos/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "nombre": "Ana",
+  "apellido": "Gómez",
+  "matricula": "MN-45981",
+  "especialidad": "Ortodoncia",
+  "username": "dra_gomez",
+  "email": "dra.gomez@odontologia.com",
+  "password": "Password123!"
+}
+
+### Baja lógica de odontólogo y su cuenta (Requiere Rol ADMIN)
+DELETE {{baseUrl}}/api/v1/admin/odontologos/1
+Authorization: Bearer {{token}}
 
 ### -------------------------------------------------------------------
 ### 4. PACIENTES Y FICHAS (Change C-05 - Diego)

@@ -109,6 +109,28 @@ class OdontologoControllerTest {
         verifyNoInteractions(odontologoService);
     }
 
+    @Test
+    @WithAnonymousUser
+    @DisplayName("PUT /api/v1/admin/odontologos/{id} sin credenciales debe retornar 401")
+    void modificar_SinCredenciales_DebeRetornar401() throws Exception {
+        mockMvc.perform(put("/api/v1/admin/odontologos/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(CUERPO_ADMIN))
+                .andExpect(status().isUnauthorized());
+
+        verifyNoInteractions(odontologoService);
+    }
+
+    @Test
+    @WithAnonymousUser
+    @DisplayName("DELETE /api/v1/admin/odontologos/{id} sin credenciales debe retornar 401")
+    void baja_SinCredenciales_DebeRetornar401() throws Exception {
+        mockMvc.perform(delete("/api/v1/admin/odontologos/1"))
+                .andExpect(status().isUnauthorized());
+
+        verifyNoInteractions(odontologoService);
+    }
+
     private void verificarAccesoDenegado(org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder request) throws Exception {
         mockMvc.perform(request)
                 .andExpect(status().isForbidden())

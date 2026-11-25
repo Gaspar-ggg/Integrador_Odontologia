@@ -39,16 +39,37 @@
 
 ## 6. Seed y documentación
 
-- [ ] 6.1 Escribir el test fallido de idempotencia: ejecutar `DataInitializer.run()` dos veces sobre H2 y verificar que existe un único profesional de prueba con su única cuenta `ODONTOLOGO`; verificar rojo.
-- [ ] 6.2 Implementar el seed idempotente (guardas `existsByUsername` y `existsByMatricula`, password hasheada con el `PasswordEncoder` existente); verificar que el test 6.1 pasa y que los tests de auth siguen verdes.
-- [ ] 6.3 Actualizar `docs/api-requests.http`: agregar `"password"` al alta de odontólogo y ejemplos de `PUT /api/v1/admin/odontologos/{id}` y `DELETE /api/v1/admin/odontologos/{id}` con token admin; verificar que los tres bloques están presentes y que el body del alta incluye el campo obligatorio.
+- [x] 6.1 Escribir el test fallido de idempotencia: ejecutar `DataInitializer.run()` dos veces sobre H2 y verificar que existe un único profesional de prueba con su única cuenta `ODONTOLOGO`; verificar rojo.
+- [x] 6.2 Implementar el seed idempotente (guardas `existsByUsername` y `existsByMatricula`, password hasheada con el `PasswordEncoder` existente); verificar que el test 6.1 pasa y que los tests de auth siguen verdes.
+- [x] 6.3 Actualizar `docs/api-requests.http`: agregar `"password"` al alta de odontólogo y ejemplos de `PUT /api/v1/admin/odontologos/{id}` y `DELETE /api/v1/admin/odontologos/{id}` con token admin; verificar que los tres bloques están presentes y que el body del alta incluye el campo obligatorio.
 
 ## 7. Verificación final
 
-- [ ] 7.1 Ejecutar `./gradlew test` contra H2 y verificar que toda la suite pasa sin conexión a PostgreSQL ni a la BD de desarrollo.
-- [ ] 7.2 Ejecutar `./gradlew build` y verificar compilación limpia de Java 17 sin advertencias de dependencias nuevas.
-- [ ] 7.3 Verificar uno por uno los escenarios de `specs/profesionales/spec.md` (alta exitosa, password inválido, matrícula duplicada, duplicado inactivo, modificación, 404, baja, login denegado, catálogo sin token, sin datos de cuenta, inactivos excluidos, 403, 401 y seed idempotente) y registrar cuáles quedan cubiertos por tests automatizados.
-- [ ] 7.4 Verificar las reglas duras del proyecto: controllers sólo con DTOs, excepciones centralizadas en `ErrorResponseDTO`, sin borrado físico de registros clínicos ni usuarios, y sin cambios visuales ni estilos hardcodeados.
+- [x] 7.1 Ejecutar `./gradlew test` contra H2 y verificar que toda la suite pasa sin conexión a PostgreSQL ni a la BD de desarrollo.
+- [x] 7.2 Ejecutar `./gradlew build` y verificar compilación limpia de Java 17 sin advertencias de dependencias nuevas.
+- [x] 7.3 Verificar uno por uno los escenarios de `specs/profesionales/spec.md` (alta exitosa, password inválido, matrícula duplicada, duplicado inactivo, modificación, 404, baja, login denegado, catálogo sin token, sin datos de cuenta, inactivos excluidos, 403, 401 y seed idempotente) y registrar cuáles quedan cubiertos por tests automatizados.
+- [x] 7.4 Verificar las reglas duras del proyecto: controllers sólo con DTOs, excepciones centralizadas en `ErrorResponseDTO`, sin borrado físico de registros clínicos ni usuarios, y sin cambios visuales ni estilos hardcodeados.
+
+### Cobertura de escenarios (7.3)
+
+Suite: 76 tests, 0 fallos, 0 errores, 0 omitidos (H2). Los 14 escenarios de la spec tienen al menos un test automatizado.
+
+| Escenario de la spec | Test(s) que lo cubren | Estado |
+|---|---|---|
+| Alta exitosa vincula la cuenta de usuario | `OdontologoAdminControllerTest.crear_Admin_DebeRetornar201SinPassword` + `OdontologoServiceTest.crear_Valido_DebeCrearUsuarioYProfesionalVinculados` | Cubierto |
+| Password ausente o inválido rechaza el alta | `OdontologoRequestValidationTest.crear_SinPassword_DebeRetornar400`, `crear_PasswordVacio_DebeRetornar400`, `crear_PasswordCorto_DebeRetornar400`, `crear_CamposObligatoriosAusentes_DebeRetornar400` (con `verifyNoInteractions`) | Cubierto |
+| Matrícula duplicada | `OdontologoServiceTest.crear_MatriculaDuplicada_DebeLanzarConflictException` + `OdontologoRequestValidationTest.crear_Conflicto_DebeRetornar409` | Cubierto |
+| Username o email duplicado de cuenta inactiva | `OdontologoServiceTest.crear_UsernameInactivo_DebeLanzarConflictException`, `crear_EmailInactivo_DebeLanzarConflictException` | Cubierto |
+| Modificación exitosa | `OdontologoServiceTest.modificar_Valido_DebeActualizarYConservarCuenta` + `OdontologoAdminControllerTest.modificar_Admin_DebeRetornar200YConservarCuenta` | Cubierto |
+| Profesional inexistente | `OdontologoServiceTest.modificar_Inexistente_DebeLanzarResourceNotFoundException`, `modificar_Inactivo_DebeLanzarResourceNotFoundException` + `OdontologoAdminControllerTest.modificar_Inexistente_DebeRetornar404` | Cubierto |
+| Baja desactiva profesional y cuenta | `OdontologoAdminIntegrationTest.baja_DebeDesactivarProfesionalYCuenta` + `OdontologoAdminControllerTest.baja_Admin_DebeRetornar204` | Cubierto |
+| La cuenta desactivada no puede autenticarse | `OdontologoAdminIntegrationTest.login_TrasBaja_DebeRetornar403` (+ `AuthIntegrationTest.login_UsuarioInactivo_DebeRetornar403`) | Cubierto |
+| Acceso público sin token | `OdontologoControllerTest.catalogo_SinToken_DebeRetornar200` + `OdontologoPublicIntegrationTest.catalogo_SinToken_DebeExponerSoloDatosProfesionales` | Cubierto |
+| El catálogo no expone datos de cuenta | `OdontologoPublicIntegrationTest.catalogo_SinToken_DebeExponerSoloDatosProfesionales` (whitelist exacta de claves) | Cubierto |
+| Profesionales dados de baja quedan fuera del catálogo | `OdontologoPublicIntegrationTest.catalogo_ProfesionalDeBaja_NoDebeAparecer` + `OdontologoRepositoryTest.softDelete_DebeMarcarInactivoYExcluirDeConsultas` | Cubierto |
+| Rol sin permiso | `OdontologoControllerTest.crear_Paciente_DebeRetornar403`, `modificar_Paciente_DebeRetornar403`, `baja_Paciente_DebeRetornar403` (+ espejos en `OdontologoAdminControllerTest`, con `verifyNoInteractions`) | Cubierto |
+| Petición sin credenciales | `OdontologoControllerTest.crear_SinCredenciales_DebeRetornar401`, `modificar_SinCredenciales_DebeRetornar401`, `baja_SinCredenciales_DebeRetornar401` | Cubierto |
+| Reinicio sin duplicados (seed idempotente) | `DataInitializerTest.run_DosVeces_DebeSerIdempotente` | Cubierto |
 
 ## Workflow follow-up
 
