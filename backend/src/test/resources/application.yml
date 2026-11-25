@@ -13,7 +13,19 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
     show-sql: false
+  mail:
+    host: localhost
+    port: 2525
 
 jwt:
   secret: test-super-secret-key-for-jwt-authentication-odontologia-2026-32bytes-min
   expiration-ms: 86400000
+
+notificaciones:
+  consultorio:
+    nombre: Clínica Odontológica Integral
+    direccion: Av. San Martín 1250, Mendoza
+  mail:
+    from: no-reply@clinicaodontologica.local
+  whatsapp:
+    mock-enabled: true

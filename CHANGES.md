@@ -267,7 +267,7 @@ Paso │ Agente A (Backend Core)       │ Agente B (Backend Aux)       │ Agen
 ## FASE 4 — Notificaciones y Recordatorios
 
 ### [C-09] `notificaciones-turnos`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (archivado 2026-11-25)
 - **Scope**: Envío desacoplado de confirmaciones y recordatorios por correo electrónico y mensajería
   - Arquitectura Strategy / Adapter: interfaz `NotificationService` con implementaciones `EmailNotificationAdapter` y `WhatsAppNotificationAdapter`
   - `EmailNotificationAdapter`: integración con Spring Mail (`JavaMailSender`) utilizando configuración SMTP (`MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`) y plantilla con fecha, hora, odontólogo y consultorio (RN-NT-01)

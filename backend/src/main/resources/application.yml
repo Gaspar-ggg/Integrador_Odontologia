@@ -16,10 +16,30 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: false
+  mail:
+    host: ${MAIL_HOST:localhost}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: ${MAIL_SMTP_AUTH:false}
+          starttls:
+            enable: ${MAIL_STARTTLS_ENABLE:false}
 
 jwt:
   secret: ${JWT_SECRET:dev-super-secret-key-change-in-production-odontologia-2026-32bytes-min}
   expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+notificaciones:
+  consultorio:
+    nombre: ${CLINICA_NOMBRE:Clínica Odontológica Integral}
+    direccion: ${CLINICA_DIRECCION:Av. San Martín 1250, Mendoza}
+  mail:
+    from: ${MAIL_FROM:no-reply@clinicaodontologica.local}
+  whatsapp:
+    mock-enabled: ${WHATSAPP_MOCK_ENABLED:true}
 
 server:
   port: 8080
