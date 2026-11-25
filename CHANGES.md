@@ -196,7 +196,7 @@ Paso │ Agente A (Backend Core)       │ Agente B (Backend Aux)       │ Agen
 ## FASE 2 — Agenda y Gestión de Turnos
 
 ### [C-06] `turnos-agenda-backend`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (archivado 2026-11-25)
 - **Scope**: Lógica transaccional de turnos, cálculo de disponibilidad y validación anti-solapamiento
   - Entidad JPA `Turno`: `id` (BIGSERIAL PK), `paciente_id` (FK), `odontologo_id` (FK), `fecha_hora_inicio` (TIMESTAMP), `fecha_hora_fin` (TIMESTAMP), `estado` ENUM (`PENDIENTE`, `CONFIRMADO`, `ATENDIDO`, `CANCELADO`), `motivo_consulta`, `activo` (BOOLEAN)
   - Índice y constraint de no solapamiento en BD: `idx_odontologo_fecha` sobre `odontologo_id`, `fecha_hora_inicio`, `fecha_hora_fin`
