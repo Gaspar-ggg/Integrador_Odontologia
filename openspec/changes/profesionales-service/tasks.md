@@ -24,18 +24,18 @@
 
 ## 4. Endpoints administrativos
 
-- [ ] 4.1 Escribir los tests fallidos de `POST /api/v1/admin/odontologos` con `@WithMockUser(roles = "ADMIN")`: 201 con datos del profesional y sin `password`; verificar rojo.
-- [ ] 4.2 Implementar el `POST` en `OdontologoController` con `@PreAuthorize("hasRole('ADMIN')")` y `@Valid`; verificar que el test 4.1 pasa y que el rol `PACIENTE` sigue recibiendo 403 (test 1.2).
-- [ ] 4.3 Escribir los tests fallidos de `PUT /api/v1/admin/odontologos/{id}`: modificación exitosa conserva la cuenta vinculada e id inexistente/inactivo responde 404; verificar rojo.
-- [ ] 4.4 Implementar el `PUT` en controller y servicio con `@Transactional`; verificar que los tests 4.3 pasan, incluido el 409 por matrícola ajena del escenario de la spec.
-- [ ] 4.5 Escribir el test fallido de `DELETE /api/v1/admin/odontologos/{id}`: odontólogo y usuario quedan con `activo = false`, las filas siguen existiendo y el catálogo ya no los lista; verificar rojo.
-- [ ] 4.6 Implementar la baja lógica en el servicio (sin `delete()` físico, `desactivar()` de ambos registros en la misma transacción); verificar que el test 4.5 pasa y que el login con esa cuenta responde 403 según RN-AU-04.
+- [x] 4.1 Escribir los tests fallidos de `POST /api/v1/admin/odontologos` con `@WithMockUser(roles = "ADMIN")`: 201 con datos del profesional y sin `password`; verificar rojo.
+- [x] 4.2 Implementar el `POST` en `OdontologoController` con `@PreAuthorize("hasRole('ADMIN')")` y `@Valid`; verificar que el test 4.1 pasa y que el rol `PACIENTE` sigue recibiendo 403 (test 1.2).
+- [x] 4.3 Escribir los tests fallidos de `PUT /api/v1/admin/odontologos/{id}`: modificación exitosa conserva la cuenta vinculada e id inexistente/inactivo responde 404; verificar rojo.
+- [x] 4.4 Implementar el `PUT` en controller y servicio con `@Transactional`; verificar que los tests 4.3 pasan, incluido el 409 por matrícola ajena del escenario de la spec.
+- [x] 4.5 Escribir el test fallido de `DELETE /api/v1/admin/odontologos/{id}`: odontólogo y usuario quedan con `activo = false`, las filas siguen existiendo y el catálogo ya no los lista; verificar rojo.
+- [x] 4.6 Implementar la baja lógica en el servicio (sin `delete()` físico, `desactivar()` de ambos registros en la misma transacción); verificar que el test 4.5 pasa y que el login con esa cuenta responde 403 según RN-AU-04.
 
 ## 5. Catálogo público
 
-- [ ] 5.1 Escribir el test fallido de integración sin token: `GET /api/v1/public/odontologos` responde 200 y cada elemento contiene exactamente `id`, `nombre`, `apellido`, `matricula`, `especialidad`, sin `username`, `email` ni contraseña; verificar rojo.
-- [ ] 5.2 Implementar el endpoint público devolviendo `OdontologoPublicDTO` desde `findByActivoTrue()`; verificar que el test 5.1 pasa con la whitelist de 1.3.
-- [ ] 5.3 Agregar el test que confirma que un profesional dado de baja no aparece en el catálogo y verificar que pasa por `@SQLRestriction`.
+- [x] 5.1 Escribir el test fallido de integración sin token: `GET /api/v1/public/odontologos` responde 200 y cada elemento contiene exactamente `id`, `nombre`, `apellido`, `matricula`, `especialidad`, sin `username`, `email` ni contraseña; verificar rojo.
+- [x] 5.2 Implementar el endpoint público devolviendo `OdontologoPublicDTO` desde `findByActivoTrue()`; verificar que el test 5.1 pasa con la whitelist de 1.3.
+- [x] 5.3 Agregar el test que confirma que un profesional dado de baja no aparece en el catálogo y verificar que pasa por `@SQLRestriction`.
 
 ## 6. Seed y documentación
 

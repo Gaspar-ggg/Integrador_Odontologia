@@ -5,10 +5,10 @@ import com.odontologia.dto.OdontologoRequestDTO;
 import com.odontologia.exception.ConflictException;
 import com.odontologia.exception.GlobalExceptionHandler;
 import com.odontologia.security.JwtAuthenticationFilter;
+import com.odontologia.service.OdontologoService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
-import jakarta.validation.Valid;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,41 +16,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WithMockUser(roles = "ADMIN")
-@WebMvcTest(OdontologoRequestValidationTest.ValidationProbeController.class)
-@Import({SecurityConfig.class, GlobalExceptionHandler.class,
-        OdontologoRequestValidationTest.ValidationProbeController.class})
+@WebMvcTest(OdontologoController.class)
+@Import({SecurityConfig.class, GlobalExceptionHandler.class})
 class OdontologoRequestValidationTest {
-
-    @RestController
-    @RequestMapping("/api/v1/admin/odontologos")
-    public static class ValidationProbeController {
-
-        @PostMapping
-        public ResponseEntity<Void> crear(@Valid @RequestBody OdontologoRequestDTO request) {
-            return ResponseEntity.ok().build();
-        }
-
-        @PostMapping("/conflicto")
-        public ResponseEntity<Void> conflicto() {
-            throw new ConflictException("El profesional ya está registrado");
-        }
-    }
 
     private static final String CUERPO_BASE = """
             {"nombre":"Ana","apellido":"Pérez","matricula":"MAT-VAL-001",\
@@ -63,6 +43,9 @@ class OdontologoRequestValidationTest {
 
     @MockitoBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @MockitoBean
+    private OdontologoService odontologoService;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -99,16 +82,20 @@ class OdontologoRequestValidationTest {
     }
 
     @Test
-    @DisplayName("ConflictException debe mapearse a 409 con ErrorResponseDTO")
-    void conflicto_DebeRetornar409() throws Exception {
-        mockMvc.perform(post("/api/v1/admin/odontologos/conflicto")
-                        .contentType(MediaType.APPLICATION_JSON))
+    @DisplayName("ConflictException del alta debe mapearse a 409 con ErrorResponseDTO")
+    void crear_Conflicto_DebeRetornar409() throws Exception {
+        when(odontologoService.crear(any(OdontologoRequestDTO.class)))
+                .thenThrow(new ConflictException("El profesional ya está registrado"));
+
+        mockMvc.perform(post("/api/v1/admin/odontologos")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(CUERPO_BASE + ",\"password\":\"password123\"}"))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.status").value(409))
                 .andExpect(jsonPath("$.error").value("Conflict"))
                 .andExpect(jsonPath("$.message").value("El profesional ya está registrado"))
                 .andExpect(jsonPath("$.timestamp").exists())
-                .andExpect(jsonPath("$.path").value("/api/v1/admin/odontologos/conflicto"));
+                .andExpect(jsonPath("$.path").value("/api/v1/admin/odontologos"));
     }
 
     private void validarInvalido(String cuerpo, String... campos) throws Exception {

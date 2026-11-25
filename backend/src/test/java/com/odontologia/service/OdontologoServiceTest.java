@@ -3,6 +3,7 @@ package com.odontologia.service;
 import com.odontologia.dto.OdontologoRequestDTO;
 import com.odontologia.dto.OdontologoResponseDTO;
 import com.odontologia.exception.ConflictException;
+import com.odontologia.exception.ResourceNotFoundException;
 import com.odontologia.model.Odontologo;
 import com.odontologia.model.Rol;
 import com.odontologia.model.Usuario;
@@ -133,6 +134,95 @@ class OdontologoServiceTest {
 
         assertThat(usuarioRepository.findByUsernameIncludingInactive("odontologo_svc_email_nuevo")).isEmpty();
         assertThat(odontologoRepository.findByMatricula("MAT-SVC-NEW-EMAIL")).isEmpty();
+    }
+
+    @Test
+    @DisplayName("La modificación debe actualizar los datos profesionales y conservar la cuenta vinculada")
+    void modificar_Valido_DebeActualizarYConservarCuenta() {
+        String username = "odontologo_svc_mod";
+        OdontologoResponseDTO creado = odontologoService.crear(request(username, "MAT-SVC-MOD-001", "password123"));
+        Usuario usuarioOriginal = usuarioRepository.findByUsernameIncludingInactive(username).orElseThrow();
+
+        OdontologoRequestDTO cambios = request(username, "otro_email@clinica.com", "MAT-SVC-MOD-002", "otraPassword");
+        cambios.setNombre("Ana María");
+        cambios.setApellido("Gómez");
+        cambios.setEspecialidad("Endodoncia");
+
+        OdontologoResponseDTO respuesta = odontologoService.modificar(creado.getId(), cambios);
+
+        assertThat(respuesta.getId()).isEqualTo(creado.getId());
+        assertThat(respuesta.getNombre()).isEqualTo("Ana María");
+        assertThat(respuesta.getApellido()).isEqualTo("Gómez");
+        assertThat(respuesta.getMatricula()).isEqualTo("MAT-SVC-MOD-002");
+        assertThat(respuesta.getEspecialidad()).isEqualTo("Endodoncia");
+        assertThat(respuesta.getUsername()).isEqualTo(username);
+        assertThat(respuesta.getEmail()).isEqualTo(usuarioOriginal.getEmail());
+
+        Usuario usuarioTrasModificacion = usuarioRepository.findByUsernameIncludingInactive(username).orElseThrow();
+        assertThat(usuarioTrasModificacion.getId()).isEqualTo(usuarioOriginal.getId());
+        assertThat(usuarioTrasModificacion.getEmail()).isEqualTo(usuarioOriginal.getEmail());
+        assertThat(usuarioTrasModificacion.getPasswordHash()).isEqualTo(usuarioOriginal.getPasswordHash());
+        assertThat(odontologoRepository.findByMatricula("MAT-SVC-MOD-001")).isEmpty();
+        assertThat(odontologoRepository.findByMatricula("MAT-SVC-MOD-002")).isPresent();
+    }
+
+    @Test
+    @DisplayName("La modificación con id inexistente debe lanzar ResourceNotFoundException")
+    void modificar_Inexistente_DebeLanzarResourceNotFoundException() {
+        assertThatThrownBy(() -> odontologoService.modificar(
+                999999L, request("odontologo_svc_mod_404", "MAT-SVC-MOD-404", "password123")))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("La modificación de un odontólogo dado de baja debe lanzar ResourceNotFoundException")
+    void modificar_Inactivo_DebeLanzarResourceNotFoundException() {
+        Long id = transactionTemplate.execute(status -> {
+            OdontologoResponseDTO creado = odontologoService.crear(
+                    request("odontologo_svc_mod_inactivo", "MAT-SVC-MOD-INACT", "password123"));
+            Odontologo odontologo = odontologoRepository.findById(creado.getId()).orElseThrow();
+            odontologoRepository.delete(odontologo);
+            odontologoRepository.flush();
+            return creado.getId();
+        });
+
+        assertThat(odontologoRepository.findById(id)).isEmpty();
+        assertThatThrownBy(() -> odontologoService.modificar(id,
+                request("odontologo_svc_mod_inactivo", "MAT-SVC-MOD-INACT-NEW", "password123")))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("La modificación con matrícula de otro profesional debe lanzar ConflictException sin cambiar datos")
+    void modificar_MatriculaAjena_DebeLanzarConflictException() {
+        guardarProfesionalPreexistente("odontologo_svc_mod_a", "odontologo_svc_mod_a@clinica.com", "MAT-SVC-MOD-A");
+        guardarProfesionalPreexistente("odontologo_svc_mod_b", "odontologo_svc_mod_b@clinica.com", "MAT-SVC-MOD-B");
+        Long id = odontologoRepository.findByMatricula("MAT-SVC-MOD-A").orElseThrow().getId();
+
+        assertThatThrownBy(() -> odontologoService.modificar(id, request(
+                "odontologo_svc_mod_a", "odontologo_svc_mod_a@clinica.com", "MAT-SVC-MOD-B", "password123")))
+                .isInstanceOf(ConflictException.class);
+
+        assertThat(odontologoRepository.findById(id).orElseThrow().getMatricula()).isEqualTo("MAT-SVC-MOD-A");
+        assertThat(odontologoRepository.findById(id).orElseThrow().getNombre()).isEqualTo("Pre");
+    }
+
+    @Test
+    @DisplayName("La modificación con matrícula de un profesional inactivo debe lanzar ConflictException")
+    void modificar_MatriculaInactiva_DebeLanzarConflictException() {
+        guardarProfesionalPreexistente("odontologo_svc_mod_ina", "odontologo_svc_mod_ina@clinica.com", "MAT-SVC-MOD-OLD");
+        transactionTemplate.executeWithoutResult(status -> {
+            Odontologo inactivo = odontologoRepository.findByMatricula("MAT-SVC-MOD-OLD").orElseThrow();
+            odontologoRepository.delete(inactivo);
+            odontologoRepository.flush();
+        });
+        Long id = odontologoService.crear(request("odontologo_svc_mod_owner", "MAT-SVC-MOD-OWN", "password123")).getId();
+
+        assertThatThrownBy(() -> odontologoService.modificar(id, request(
+                "odontologo_svc_mod_owner", "odontologo_svc_mod_owner@clinica.com", "MAT-SVC-MOD-OLD", "password123")))
+                .isInstanceOf(ConflictException.class);
+
+        assertThat(odontologoRepository.findById(id).orElseThrow().getMatricula()).isEqualTo("MAT-SVC-MOD-OWN");
     }
 
     private void guardarProfesionalPreexistente(String username, String email, String matricula) {
