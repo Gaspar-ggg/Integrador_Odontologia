@@ -11,7 +11,10 @@
 import type { ApiError } from '../models/index.js';
 import { getAuthorizationHeader } from '../utils/jwt.js';
 
-export const API_BASE_URL = '/api/v1';
+export const API_BASE_URL =
+  typeof window !== 'undefined' && window.location.port !== '8080'
+    ? 'http://localhost:8080/api/v1'
+    : '/api/v1';
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
