@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Panel de La Muelita Cuyana: reservá turnos y gestioná tus citas odontológicas.">
+  <title>Mi panel — La Muelita Cuyana</title>
+  <link rel="stylesheet" href="../../design-system/tokens.css">
+  <link rel="stylesheet" href="styles/auth.css">
+  <link rel="stylesheet" href="styles/dashboard.css">
+</head>
+<body class="dashboard-page">
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegación y sesión">
+      <a class="sidebar__brand" href="dashboard.html" aria-label="Ir al panel principal">
+        <img src="../../design-system/assets/logo.svg" alt="La Muelita Cuyana" width="220" height="50">
+      </a>
+
+      <nav class="sidebar__nav" aria-label="Secciones del panel">
+        <a class="nav-link nav-link--active" href="#reserva">Reservar turno</a>
+        <a class="nav-link" href="#turnos">Mis turnos</a>
+      </nav>
+
+      <div class="sidebar__user">
+        <div class="sidebar__identity">
+          <span id="user-avatar" class="avatar" aria-hidden="true">?</span>
+          <div class="sidebar__identity-text">
+            <p id="user-name" class="sidebar__user-name">Cargando…</p>
+            <p id="user-email" class="sidebar__user-email"></p>
+          </div>
+        </div>
+        <span id="user-role" class="badge badge--role">—</span>
+      </div>
+
+      <button id="logout-button" class="btn btn--sidebar sidebar__logout" type="button">Cerrar sesión</button>
+    </aside>
+
+    <main class="main">
+      <header class="page-header">
+        <div>
+          <p class="page-header__eyebrow" data-brand-name>La Muelita Cuyana</p>
+          <h1 id="page-title">Hola, <span id="user-greeting">—</span></h1>
+          <p id="page-subtitle" class="page-header__subtitle">Cargando tu panel…</p>
+        </div>
+        <span id="header-role" class="badge badge--role">—</span>
+      </header>
+
+      <div id="global-alert" class="alert" role="alert" aria-live="polite" hidden></div>
+      <div id="session-notice" class="alert alert--warning" role="status" aria-live="polite" hidden></div>
+
+      <section id="paciente-panel" class="card" aria-labelledby="paciente-title" hidden>
+        <header class="card__header">
+          <div>
+            <h2 id="paciente-title">Paciente</h2>
+            <p>Buscá por DNI o nombre para reservar y gestionar sus turnos.</p>
+          </div>
+        </header>
+
+        <form id="paciente-form" class="inline-form">
+          <div class="field">
+            <label class="field__label" for="paciente-busqueda">DNI o nombre</label>
+            <input
+              class="field__input"
+              id="paciente-busqueda"
+              name="paciente-busqueda"
+              type="search"
+              placeholder="Ej. 38452119 o María García"
+              autocomplete="off"
+            >
+          </div>
+          <button id="buscar-paciente" class="btn btn--primary" type="submit">Buscar</button>
+        </form>
+
+        <p id="paciente-status" class="muted" role="status" aria-live="polite"></p>
+        <div id="paciente-resultados" class="resultados"></div>
+        <p id="paciente-seleccionado" class="context-line" hidden></p>
+      </section>
+
+      <div class="content-grid">
+        <section id="reserva" class="card" aria-labelledby="reserva-title">
+          <header class="card__header">
+            <div>
+              <h2 id="reserva-title">Reservar turno</h2>
+              <p>Elegí profesional, fecha y un horario libre.</p>
+            </div>
+          </header>
+
+          <p id="reserva-paciente" class="context-line" hidden></p>
+
+          <form id="reserva-form" class="reserva-form">
+            <div class="field-grid">
+              <div class="field">
+                <label class="field__label" for="odontologo">Profesional</label>
+                <select id="odontologo" class="field__input" required>
+                  <option value="">Cargando profesionales…</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label class="field__label" for="fecha">Fecha</label>
+                <input id="fecha" class="field__input" type="date" required>
+              </div>
+            </div>
+
+            <button id="buscar-horarios" class="btn btn--primary reserva-form__submit" type="submit">
+              Buscar horarios
+            </button>
+          </form>
+
+          <p id="slots-status" class="muted" role="status" aria-live="polite"></p>
+          <div id="slots" class="slots" role="group" aria-label="Horarios disponibles"></div>
+        </section>
+
+        <section id="turnos" class="card" aria-labelledby="turnos-title">
+          <header class="card__header">
+            <div>
+              <h2 id="turnos-title">Mis turnos</h2>
+              <p>Consultá el estado de tus citas y cancelá las que ya no necesites.</p>
+            </div>
+            <button id="refrescar-turnos" class="btn btn--ghost btn--sm" type="button">Actualizar</button>
+          </header>
+
+          <p id="turnos-status" class="muted" role="status" aria-live="polite"></p>
+          <div id="turnos-list" class="turnos-list"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal de confirmación de reserva -->
+  <dialog id="reserva-modal" class="modal" aria-labelledby="reserva-modal-title">
+    <div class="modal__card">
+      <header class="modal__header">
+        <h2 id="reserva-modal-title">Confirmar turno</h2>
+        <button class="modal__close" type="button" data-close-dialog="reserva-modal" aria-label="Cerrar">×</button>
+      </header>
+
+      <div id="reserva-modal-alert" class="alert" role="alert" aria-live="polite" hidden></div>
+
+      <dl class="summary">
+        <div><dt>Profesional</dt><dd id="modal-odontologo">—</dd></div>
+        <div><dt>Fecha</dt><dd id="modal-fecha">—</dd></div>
+        <div><dt>Horario</dt><dd id="modal-horario">—</dd></div>
+        <div><dt>Paciente</dt><dd id="modal-paciente">—</dd></div>
+      </dl>
+
+      <form id="reserva-confirm-form">
+        <div class="field">
+          <label class="field__label" for="motivo">Motivo de consulta <span class="field__hint">(opcional)</span></label>
+          <textarea
+            id="motivo"
+            class="field__input"
+            name="motivo"
+            rows="3"
+            maxlength="1000"
+            placeholder="Ej. Control de brackets"
+          ></textarea>
+        </div>
+
+        <div class="modal__actions">
+          <button class="btn btn--secondary" type="button" data-close-dialog="reserva-modal">Cancelar</button>
+          <button id="confirmar-reserva" class="btn btn--primary" type="submit">Confirmar turno</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Modal de cancelación -->
+  <dialog id="cancelar-modal" class="modal" aria-labelledby="cancelar-modal-title">
+    <div class="modal__card">
+      <header class="modal__header">
+        <h2 id="cancelar-modal-title">Cancelar turno</h2>
+        <button class="modal__close" type="button" data-close-dialog="cancelar-modal" aria-label="Cerrar">×</button>
+      </header>
+
+      <div id="cancelar-modal-alert" class="alert" role="alert" aria-live="polite" hidden></div>
+
+      <p class="modal__lead">¿Confirmás la cancelación de este turno? Esta acción no se puede deshacer.</p>
+      <dl id="cancelar-resumen" class="summary"></dl>
+
+      <div class="modal__actions">
+        <button class="btn btn--secondary" type="button" data-close-dialog="cancelar-modal">Volver</button>
+        <button id="confirmar-cancelacion" class="btn btn--danger" type="button">Sí, cancelar turno</button>
+      </div>
+    </div>
+  </dialog>
+
+  <noscript>
+    <p class="muted">Necesitás habilitar JavaScript para usar el panel.</p>
+  </noscript>
+
+  <script type="module" src="../../design-system/brand.js"></script>
+  <script type="module" src="../dist/pages/dashboard.js"></script>
+</body>
+</html>

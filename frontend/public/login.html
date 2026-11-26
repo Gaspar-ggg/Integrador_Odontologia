@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ingresá a La Muelita Cuyana para gestionar tus turnos odontológicos.">
+  <title>Iniciar sesión — La Muelita Cuyana</title>
+  <link rel="stylesheet" href="../../design-system/tokens.css">
+  <link rel="stylesheet" href="styles/auth.css">
+</head>
+<body class="auth-page">
+  <div class="auth-layout">
+    <aside class="auth-brand" aria-label="Información de la clínica">
+      <p class="auth-brand__eyebrow" data-brand-name>La Muelita Cuyana</p>
+
+      <div class="auth-brand__copy">
+        <h2>Tu agenda dental, siempre a mano.</h2>
+        <p data-brand-tagline>Consultorio y Gestión Odontológica</p>
+        <ul class="auth-brand__list">
+          <li>Reservá turnos online las 24 horas.</li>
+          <li>Consultá y cancelá tus citas cuando lo necesites.</li>
+          <li>Recibí confirmaciones por correo y mensajería.</li>
+        </ul>
+      </div>
+
+      <p class="auth-brand__foot">Mendoza, Argentina · Atención de lunes a viernes</p>
+    </aside>
+
+    <main class="auth-main">
+      <section class="auth-card" aria-labelledby="page-title">
+        <a class="auth-logo" href="index.html" aria-label="Volver al inicio">
+          <img src="../../design-system/assets/logo.svg" alt="La Muelita Cuyana" width="220" height="50">
+        </a>
+
+        <header class="auth-card__header">
+          <h1 id="page-title">Iniciar sesión</h1>
+          <p>Ingresá con tu usuario para gestionar tus turnos.</p>
+        </header>
+
+        <div id="form-alert" class="alert" role="alert" aria-live="polite" hidden></div>
+
+        <form id="login-form" class="auth-form" method="post" action="login.html">
+          <div class="field">
+            <label class="field__label" for="username">Usuario</label>
+            <input
+              class="field__input"
+              id="username"
+              name="username"
+              type="text"
+              autocomplete="username"
+              placeholder="Ej. maria.garcia"
+              maxlength="50"
+              required
+              autofocus
+            >
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="password">Contraseña</label>
+            <div class="field__control">
+              <input
+                class="field__input"
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Tu contraseña"
+                minlength="6"
+                maxlength="100"
+                required
+              >
+              <button
+                class="field__toggle"
+                type="button"
+                data-toggle-password="password"
+                aria-label="Mostrar contraseña"
+                aria-pressed="false"
+              >Mostrar</button>
+            </div>
+          </div>
+
+          <button id="submit-button" class="btn btn--primary btn--block" type="submit">Ingresar</button>
+        </form>
+
+        <p class="auth-footer">
+          ¿Todavía no tenés cuenta? <a href="registro.html">Creá tu cuenta</a>
+        </p>
+        <p class="auth-legal">Uso exclusivo para pacientes y personal autorizado de la clínica.</p>
+      </section>
+    </main>
+  </div>
+
+  <noscript>
+    <p class="auth-legal">Necesitás habilitar JavaScript para iniciar sesión.</p>
+  </noscript>
+
+  <script type="module" src="../../design-system/brand.js"></script>
+  <script type="module" src="../dist/pages/login.js"></script>
+</body>
+</html>
