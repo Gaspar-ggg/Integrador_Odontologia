@@ -1,82 +1,46 @@
-import { getAuthorizationHeader, saveToken } from '../utils/jwt.js';
+/**
+ * Cliente de autenticación.
+ *
+ * - `POST /api/v1/auth/login`
+ * - `POST /api/v1/auth/register`
+ * - `GET  /api/v1/auth/me`
+ *
+ * Los contratos viven en `models/auth.ts`; se re-exportan para no romper
+ * imports existentes (`import { AuthResponse } from '../api/auth.js'`).
+ */
 
-export interface LoginRequest {
-  username: string;
-  password: string;
-}
+import type {
+  AuthResponse,
+  LoginRequest,
+  RegisterRequest,
+  UserMeResponse,
+} from '../models/index.js';
+import { saveToken } from '../utils/jwt.js';
+import { apiRequest } from './client.js';
 
-export interface RegisterRequest {
-  username: string;
-  email: string;
-  password: string;
-}
+export type { AuthResponse, LoginRequest, RegisterRequest, UserMeResponse };
 
-export interface AuthResponse {
-  token: string;
-  tipo: string;
-  rol: string;
-}
-
-export interface UserMeResponse {
-  id: number;
-  username: string;
-  email: string;
-  rol: string;
-  activo: boolean;
-}
-
-export interface ApiError {
-  status: number;
-  error: string;
-  message: string;
-  path: string;
-  timestamp: string;
-  details?: Record<string, string>;
-}
-
-const API_BASE = '/api/v1/auth';
-
-async function parseJsonResponse<T>(response: Response): Promise<T> {
-  if (!response.ok) {
-    const error = (await response.json()) as ApiError;
-    throw error;
-  }
-  return (await response.json()) as T;
-}
-
+/** Autentica al usuario y persiste el JWT en el almacenamiento local. */
 export async function login(request: LoginRequest): Promise<AuthResponse> {
-  const response = await fetch(`${API_BASE}/login`, {
+  const data = await apiRequest<AuthResponse>('/auth/login', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(request),
+    body: request,
+    auth: false,
   });
-
-  const data = await parseJsonResponse<AuthResponse>(response);
   saveToken(data.token);
   return data;
 }
 
-export async function register(request: RegisterRequest): Promise<UserMeResponse> {
-  const response = await fetch(`${API_BASE}/register`, {
+/** Registra un usuario nuevo (rol PACIENTE por defecto en el backend). */
+export function register(request: RegisterRequest): Promise<UserMeResponse> {
+  return apiRequest<UserMeResponse>('/auth/register', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(request),
+    body: request,
+    auth: false,
   });
-
-  return parseJsonResponse<UserMeResponse>(response);
 }
 
-export async function me(): Promise<UserMeResponse> {
-  const response = await fetch(`${API_BASE}/me`, {
-    method: 'GET',
-    headers: {
-      ...getAuthorizationHeader(),
-    },
-  });
-
-  return parseJsonResponse<UserMeResponse>(response);
+/** Devuelve el usuario autenticado según el token Bearer actual. */
+export function me(): Promise<UserMeResponse> {
+  return apiRequest<UserMeResponse>('/auth/me');
 }
