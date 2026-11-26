@@ -221,7 +221,7 @@ Paso │ Agente A (Backend Core)       │ Agente B (Backend Aux)       │ Agen
 ---
 
 ### [C-07] `agenda-web-frontend`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado (archivado 2026-11-26)
 - **Scope**: Frontend TypeScript vanilla para autenticación, dashboard por rol y reserva interactiva de turnos
   - Vistas HTML responsivas en `frontend/public/`: `login.html`, `registro.html`, `dashboard.html` utilizando variables de `design-system/tokens.css` y branding de `design-system/brand.js`
   - Cliente API en TypeScript (`src/api/turnos.ts`, `src/api/odontologos.ts`, `src/api/pacientes.ts`) consumiendo los endpoints con fetch y token Bearer
